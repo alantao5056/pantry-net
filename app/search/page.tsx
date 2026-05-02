@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { FilterSidebar } from "@/components/pantry-finder/FilterSidebar";
 import { Navbar } from "@/components/pantry-finder/Navbar";
 import { PantryCard } from "@/components/pantry-finder/PantryCard";
 import { SearchTopBar } from "@/components/pantry-finder/SearchTopBar";
-import { PANTRIES } from "@/components/pantry-finder/data";
 import { SlidersHorizontal } from "@/components/pantry-finder/icons";
 import {
   ResizableHandle,
@@ -13,10 +13,23 @@ import {
   ResizablePanelGroup
 } from "@/components/tailgrids/core/resizable";
 import Map from "@/components/map";
+import { PantryDocument } from "@/firebase/models/Pantry";
+import { searchPantriesByAddress } from "@/firebase/services";
 
 export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const initialAddress = searchParams.get("address") || "Boston, MA";
+  const initialRadius = searchParams.get("radius") || "10";
+
   const [view, setView] = useState<"list" | "map">("list");
   const [hoveredPantryId, setHoveredPantryId] = useState<string | null>(null);
+  const [searchState, setSearchState] = useState({
+    address: initialAddress,
+    radius: initialRadius,
+  });
+
+  const [PANTRIES, setPantries] = useState<PantryDocument>([]);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Map to store refs for each pantry card to enable scrolling to them
@@ -31,12 +44,28 @@ export default function SearchPage() {
     }
   }, [hoveredPantryId, view]);
 
+  useEffect(() => {
+    const fetchPantries = async () => {
+      const results = await searchPantriesByAddress(searchState.address, parseInt(searchState.radius));
+      console.log("Search results:", results);
+      //setPantries(results);
+    };
+
+    fetchPantries();
+  }, [searchState]);
+
+
   return (
     <>
       <Navbar />
 
       <div className="mt-16 flex h-[calc(100vh-64px)] flex-col bg-pantry-cream">
-        <SearchTopBar onViewChange={(view) => setView(view)} />
+        <SearchTopBar 
+          onViewChange={(view) => setView(view)} 
+          initialAddress={searchState.address}
+          initialRadius={searchState.radius}
+          onSearch={(address, radius) => setSearchState({ address, radius })}
+        />
 
         <div className="flex flex-1 overflow-hidden">
           <FilterSidebar />
@@ -54,7 +83,8 @@ export default function SearchPage() {
                   {PANTRIES.length}
                 </span>{" "}
                 pantries found within{" "}
-                <span className="font-semibold text-pantry-dark">10 miles</span>
+                <span className="font-semibold text-pantry-dark">{searchState.radius} miles</span> of{" "}
+                <span className="font-semibold text-pantry-dark">{searchState.address}</span>
               </span>
             </div>
 

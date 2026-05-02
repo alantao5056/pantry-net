@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/tailgrids/core/button";
 import { Footer } from "@/components/pantry-finder/Footer";
@@ -11,6 +13,8 @@ import {
   MapPin,
   Search,
 } from "@/components/pantry-finder/icons";
+import { useRouter } from 'next/navigation'
+import { useState } from "react";
 
 const STATS: Array<[string, string]> = [
   ["10+", "Pantries Listed"],
@@ -42,6 +46,10 @@ const STEPS = [
 
 export default function LandingPage() {
   const featured = PANTRIES.slice(0, 3);
+  const router = useRouter();
+
+  const [address, setAddress] = useState("Boston, MA");
+  const [radius, setRadius] = useState("10");
 
   return (
     <>
@@ -82,17 +90,25 @@ export default function LandingPage() {
               check hours, and get help when you need it most.
             </p>
 
-            <div className="mx-auto flex max-w-[640px] gap-2 rounded-2xl border border-white/20 bg-white/10 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                router.push(`/search?address=${encodeURIComponent(address)}&radius=${radius}`);
+              }}
+              className="mx-auto flex max-w-[640px] gap-2 rounded-2xl border border-white/20 bg-white/10 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+            >
               <label className="flex flex-1 items-center gap-2.5 rounded-xl bg-white/10 px-4">
                 <MapPin size={18} className="text-pantry-light" />
                 <input
-                  defaultValue="Newton, MA"
+                  onChange={(e) => { setAddress(e.target.value) }}
+                  defaultValue="Boston, MA"
                   placeholder="Enter address or city..."
                   className="flex-1 bg-transparent py-3.5 text-[15px] text-white placeholder:text-white/60 outline-none"
                 />
               </label>
               <select
                 defaultValue="10"
+                onChange={(e) => { setRadius(e.target.value) }}
                 className="min-w-[100px] cursor-pointer rounded-xl bg-white/10 px-4 text-sm text-white outline-none"
               >
                 {["2", "5", "10", "25", "50"].map((r) => (
@@ -102,12 +118,13 @@ export default function LandingPage() {
                 ))}
               </select>
               <Button
+                type="submit"
                 size="md"
                 className="bg-gradient-to-br from-pantry-bright to-pantry-medium px-6 text-[15px] font-semibold text-white"
               >
                 <Search size={18} /> Search
               </Button>
-            </div>
+            </form>
           </div>
 
           <svg
