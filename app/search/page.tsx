@@ -50,12 +50,13 @@ export default function SearchPage() {
 
     useEffect(() => {
         const fetchPantries = async () => {
-            const results = await searchPantriesByAddress("Boston, MA", 10);
-            console.log("Search results:", results);
-            console.log("Search state:", searchState);
-            console.log(await fetchPantryById("00qAO6txTSHy3fvIoREf"));
+            const results = await searchPantriesByAddress(
+                searchState.address,
+                parseInt(searchState.radius),
+            );
+            console.log("Fetched pantries:", results);
 
-            //setPantries(results);
+            setPantries(results || []);
         };
 
         fetchPantries();
@@ -105,7 +106,10 @@ export default function SearchPage() {
                             <div className="flex-1 overflow-y-auto">
                                 <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2 xl:grid-cols-3">
                                     {PANTRIES.map((p) => (
-                                        <PantryCard key={p.id} pantry={p} />
+                                        <PantryCard
+                                            key={p.id}
+                                            pantry={p as any}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -114,6 +118,7 @@ export default function SearchPage() {
                                 <ResizablePanel defaultSize={70}>
                                     <div className="h-full w-full">
                                         <Map
+                                            pantries={PANTRIES}
                                             onPantryHover={setHoveredPantryId}
                                             hoveredPantryId={hoveredPantryId}
                                         />
@@ -145,7 +150,9 @@ export default function SearchPage() {
                                                             : ""
                                                     }`}
                                                 >
-                                                    <PantryCard pantry={p} />
+                                                    <PantryCard
+                                                        pantry={p as any}
+                                                    />
                                                 </div>
                                             ))}
                                         </div>

@@ -52,13 +52,7 @@ export class CensusGeocoder implements Geocoder {
 }
 
 function formatAddressForCensus(input: string): string {
-    const withoutCommas = input.replace(/,/g, " ");
-    const collapsed = withoutCommas.replace(/\s+/g, " ").trim();
-    if (!collapsed) return "";
-
-    const tokens = collapsed.split(" ");
-    const encodedTokens = tokens.map((t) => encodeURIComponent(t));
-    return encodedTokens.join("+");
+    return input.trim();
 }
 
 async function fetchJsonWithRetry<T>(

@@ -36,7 +36,7 @@ export function SearchTopBar({
                 <label className="flex flex-1 items-center gap-2.5 rounded-lg border border-pantry-stone bg-pantry-cream px-3.5">
                     <MapPin size={16} className="text-pantry-bright" />
                     <input
-                        defaultValue="Newton, MA"
+                        defaultValue="Boston, MA"
                         placeholder="Address or city..."
                         className="flex-1 bg-transparent py-2.5 text-sm text-pantry-ink placeholder:text-gray-400 outline-none"
                     />
