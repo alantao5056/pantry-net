@@ -1,12 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/tailgrids/core/button";
-import { Leaf } from "./icons";
+import { Leaf, User } from "./icons";
+import { useAuth } from "@/context/AuthContext";
+import { signOut } from "@/firebase/auth";
 
 type NavbarProps = {
   variant?: "transparent" | "solid";
 };
 
 export function Navbar({ variant = "solid" }: NavbarProps) {
+  const { user, openAuthModal } = useAuth();
   const transparent = variant === "transparent";
   const textColor = transparent ? "text-white" : "text-pantry-dark";
   const mutedColor = transparent ? "text-white/80" : "text-gray-500";
@@ -36,7 +41,7 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
 
         <Link
           href="/search"
-          className={`px-1 py-1.5 text-sm font-medium ${mutedColor}`}
+          className={`px-1 py-1.5 text-sm font-medium ${mutedColor} hover:text-pantry-medium transition-colors`}
         >
           Find Pantries
         </Link>
@@ -46,21 +51,45 @@ export function Navbar({ variant = "solid" }: NavbarProps) {
           About
         </span>
         <span className={`hidden h-5 w-px sm:block ${dividerColor}`} />
-        <span
-          className={`hidden cursor-default px-1 py-1.5 text-sm font-medium sm:block ${textColor}`}
-        >
-          Sign In
-        </span>
-        <Button
-          size="sm"
-          className={
-            transparent
-              ? "border border-white/50 bg-white/15 text-white backdrop-blur-md hover:bg-white/25"
-              : "bg-pantry-dark hover:bg-pantry-medium"
-          }
-        >
-          Register
-        </Button>
+        
+        {user ? (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex size-8 items-center justify-center rounded-full bg-pantry-medium/10 text-pantry-medium">
+                <User size={16} />
+              </div>
+              <span className={`text-sm font-medium ${textColor} hidden md:block`}>
+                {user.displayName || user.email?.split('@')[0]}
+              </span>
+            </div>
+            <button
+              onClick={() => signOut()}
+              className={`text-sm font-medium ${mutedColor} hover:text-pantry-medium transition-colors`}
+            >
+              Sign Out
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              onClick={() => openAuthModal("login")}
+              className={`hidden cursor-pointer px-1 py-1.5 text-sm font-medium sm:block ${textColor} hover:text-pantry-medium transition-colors`}
+            >
+              Sign In
+            </button>
+            <Button
+              size="sm"
+              onClick={() => openAuthModal("register")}
+              className={
+                transparent
+                  ? "border border-white/50 bg-white/15 text-white backdrop-blur-md hover:bg-white/25"
+                  : "bg-pantry-dark hover:bg-pantry-medium"
+              }
+            >
+              Register
+            </Button>
+          </>
+        )}
       </div>
     </nav>
   );

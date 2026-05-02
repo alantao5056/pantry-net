@@ -8,17 +8,16 @@ function milesToKilometers(miles: number): number {
 }
 
 export async function searchPantriesByAddress(
-    address: string,
-    radiusMiles: number,
+  address: string, radius: number
 ): Promise<PantryDocument[] | null> {
-    const geocoder = GeocoderFactory.create();
-    const coordinates = await geocoder.geocode(address);
-    if (!coordinates) {
-        return null;
-    }
+  const geocoder = GeocoderFactory.create();
+  const coordinates = await geocoder.geocode(address);
+  if (!coordinates) {
+    return null;
+  }
 
-    const radiusKm = milesToKilometers(radiusMiles);
-    const center = new GeoPoint(coordinates.latitude, coordinates.longitude);
+  const radiusKm = milesToKilometers(radius);
+  const center = new GeoPoint(coordinates.latitude, coordinates.longitude);
 
     const pantriesRef = geoFirestore.collection("pantries");
 
