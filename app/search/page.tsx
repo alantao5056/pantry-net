@@ -28,7 +28,7 @@ export default function SearchPage() {
         radius: initialRadius,
     });
 
-    const [PANTRIES, setPantries] = useState<PantryDocument>([]);
+    const [PANTRIES, setPantries] = useState<PantryDocument[]>([]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
