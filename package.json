@@ -11,6 +11,7 @@
   "dependencies": {
     "@ai-sdk/mistral": "^3.0.33",
     "@ai-sdk/react": "^3.0.176",
+    "@mistralai/mistralai": "^2.2.1",
     "@tailgrids/icons": "^2.0.0",
     "ai": "^6.0.174",
     "class-variance-authority": "^0.7.1",

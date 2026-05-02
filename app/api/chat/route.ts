@@ -1,66 +1,85 @@
-import { mistral } from "@ai-sdk/mistral";
-import { streamText, tool } from "ai";
-import { z } from "zod";
-
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+import { Mistral } from '@mistralai/mistralai';
 
 export async function POST(req: Request) {
+  const apiKey = process.env.MISTRAL_API_KEY;
+
+  if (!apiKey) {
+    return Response.json({ error: "MISTRAL_API_KEY is not set in environment variables" }, { status: 500 });
+  }
+
+  const client = new Mistral({ apiKey });
   const { messages, pantryData } = await req.json();
 
-  const result = streamText({
-    model: mistral("mistral-large-latest"),
-    messages,
-    system: `You are a helpful assistant for Pantry Finder. 
+  const systemMessage = {
+    role: 'system',
+    content: `You are a helpful assistant for Pantry Finder. 
     You help users find food pantries, understand their hours, and filter for specific needs.
     You have tools to update the search address, radius, and filters.
     When a user asks to find pantries or change location, use the 'updateSearch' tool.
     When a user asks to filter results (like open now, specific day, or food types), use the 'updateFilters' tool.
-    When asked about the current results, use 'getPantriesInfo' if you don't have the data in context.
-    The current date/time is ${new Date().toLocaleString()}.`,
-    maxSteps: 5,
-    tools: {
-      updateSearch: tool({
-        description: "Update the search location and radius",
-        parameters: z.object({
-          address: z.string().describe("The location to search in"),
-          radius: z.string().describe("The radius in miles as a string"),
-        }),
-        execute: async ({ address, radius }) => {
-          return { success: true, address, radius };
-        },
-      }),
-      updateFilters: tool({
-        description: "Update the pantry filters",
-        parameters: z.object({
-          openNow: z.boolean().optional(),
-          openDay: z
-            .enum([
-              "Any day",
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
-              "Sunday",
-            ])
-            .optional(),
-          foodTypes: z.array(z.string()).optional(),
-        }),
-        execute: async (filters) => {
-          return { success: true, ...filters };
-        },
-      }),
-      getPantriesInfo: tool({
-        description: "Get information about the pantries currently found",
-        parameters: z.object({}),
-        execute: async () => {
-          return { pantries: pantryData || [] };
-        },
-      }),
-    },
-  });
+    The current date/time is ${new Date().toLocaleString()}.
+    Current pantries in context: ${JSON.stringify(pantryData || [])}`
+  };
 
-  return result.toDataStreamResponse();
+  const tools = [
+    {
+      type: 'function' as const,
+      function: {
+        name: 'updateSearch',
+        description: 'Update the search location and radius',
+        parameters: {
+          type: 'object',
+          required: ['address', 'radius'],
+          properties: {
+            address: { type: 'string', description: 'The location to search in' },
+            radius: { type: 'string', description: 'The radius in miles as a string' },
+          },
+        },
+      },
+    },
+    {
+      type: 'function' as const,
+      function: {
+        name: 'updateFilters',
+        description: 'Update the pantry filters',
+        parameters: {
+          type: 'object',
+          properties: {
+            openNow: { type: 'boolean' },
+            openDay: {
+              type: 'string',
+              enum: [
+                'Any day',
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday',
+              ],
+            },
+            foodTypes: {
+              type: 'array',
+              items: { type: 'string' }
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  try {
+    const chatResponse = await client.chat.complete({
+      model: 'mistral-large-latest',
+      messages: [systemMessage, ...messages],
+      tools: tools,
+    });
+
+    return Response.json(chatResponse.choices[0].message);
+  } catch (error) {
+    console.error("Mistral API Error:", error);
+    return Response.json({ error: "Failed to communicate with AI" }, { status: 500 });
+  }
 }
+

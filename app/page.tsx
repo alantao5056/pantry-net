@@ -177,7 +177,7 @@ export default function LandingPage() {
                     <div className="mx-auto max-w-[1100px]">
                         <div className="mb-14 text-center">
                             <h2 className="mb-3 font-serif text-3xl text-pantry-dark sm:text-4xl md:text-[42px]">
-                                How PantryFinder Works
+                                How PantryNet Works
                             </h2>
                             <p className="mx-auto max-w-[480px] text-base text-gray-500">
                                 Three simple steps to find the food support you
@@ -252,23 +252,6 @@ export default function LandingPage() {
                             ))}
                         </div>
                     </div>
-                </section>
-
-                {/* CTA */}
-                <section className="bg-gradient-to-br from-pantry-dark to-pantry-medium px-6 py-20 text-center">
-                    <h2 className="mb-4 font-serif text-3xl text-white sm:text-4xl md:text-[44px]">
-                        Know a pantry we&apos;re missing?
-                    </h2>
-                    <p className="mx-auto mb-8 max-w-[500px] text-base text-white/75">
-                        Help us keep PantryFinder accurate and complete for
-                        everyone in the community.
-                    </p>
-                    <Button
-                        size="lg"
-                        className="border-[1.5px] border-white/40 bg-white/15 text-white backdrop-blur-md hover:bg-white/25"
-                    >
-                        Submit a Pantry
-                    </Button>
                 </section>
             </main>
 
