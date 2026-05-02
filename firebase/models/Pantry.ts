@@ -18,6 +18,17 @@ export interface ServiceSchema {
   schedules: ScheduleSchema[];
 }
 
+export interface Review {
+  id: string;
+  pantryId: string;
+  userId: string;
+  userName: string;
+  userPhoto?: string;
+  rating: number;
+  comment: string;
+  createdAt: any;
+}
+
 export interface PantryDocument {
   id: string;
   name: string;
@@ -34,4 +45,5 @@ export interface PantryDocument {
   notes?: string;
   schedules: ScheduleSchema[];
   services: ServiceSchema[];
+  hearts?: string[];
 }
