@@ -20,7 +20,7 @@ interface AISidebarProps {
 
 type Message = {
     id?: string;
-    role: 'user' | 'assistant' | 'tool' | 'system';
+    role: "user" | "assistant" | "tool" | "system";
     content: string | null;
     name?: string;
     tool_calls?: any[];
@@ -49,9 +49,9 @@ export function AISidebar({
     const sendMessage = async (newMessages: Message[]) => {
         setIsLoading(true);
         try {
-            const res = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messages: newMessages, pantryData }),
             });
             const responseMessage = await res.json();
@@ -65,20 +65,26 @@ export function AISidebar({
             setMessages(updatedMessages);
 
             // Execute tools if the assistant requested them
-            if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
+            if (
+                responseMessage.tool_calls &&
+                responseMessage.tool_calls.length > 0
+            ) {
                 const toolCall = responseMessage.tool_calls[0];
                 const functionName = toolCall.function.name;
                 const functionParams = JSON.parse(toolCall.function.arguments);
 
                 let result = { success: true };
-                if (functionName === 'updateSearch') {
-                    onUpdateSearch(functionParams.address, functionParams.radius);
-                } else if (functionName === 'updateFilters') {
+                if (functionName === "updateSearch") {
+                    onUpdateSearch(
+                        functionParams.address,
+                        functionParams.radius,
+                    );
+                } else if (functionName === "updateFilters") {
                     onUpdateFilters(functionParams);
                 }
 
                 const toolMessage: Message = {
-                    role: 'tool',
+                    role: "tool",
                     name: functionName,
                     content: JSON.stringify(result),
                     tool_call_id: toolCall.id,
@@ -135,45 +141,51 @@ export function AISidebar({
                 )}
 
                 <div className="flex flex-col gap-5">
-                    {messages.filter(m => m.role !== 'tool' && m.role !== 'system').map((m, i) => (
-                        <div
-                            key={m.id || i}
-                            className={`flex flex-col ${
-                                m.role === "user" ? "items-end" : "items-start"
-                            }`}
-                        >
+                    {messages
+                        .filter((m) => m.role !== "tool" && m.role !== "system")
+                        .map((m, i) => (
                             <div
-                                className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                                key={m.id || i}
+                                className={`flex flex-col ${
                                     m.role === "user"
-                                        ? "bg-pantry-dark text-white"
-                                        : "bg-white text-pantry-ink"
+                                        ? "items-end"
+                                        : "items-start"
                                 }`}
                             >
-                                {m.content ? (
-                                    <div className="prose prose-sm prose-pantry max-w-none">
-                                        <ReactMarkdown
-                                            remarkPlugins={[remarkGfm]}
-                                        >
-                                            {m.content}
-                                        </ReactMarkdown>
-                                    </div>
-                                ) : null}
+                                <div
+                                    className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                                        m.role === "user"
+                                            ? "bg-pantry-dark text-white"
+                                            : "bg-white text-pantry-ink"
+                                    }`}
+                                >
+                                    {m.content ? (
+                                        <div className="prose prose-sm prose-pantry max-w-none">
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                            >
+                                                {m.content}
+                                            </ReactMarkdown>
+                                        </div>
+                                    ) : null}
 
-                                {/* Tool feedback */}
-                                {m.tool_calls?.map((ti) => (
-                                    <div
-                                        key={ti.id}
-                                        className="mt-2 border-t border-pantry-stone/30 pt-2 text-[11px] italic opacity-70"
-                                    >
-                                        <span>✓ Applied {ti.function.name}</span>
-                                    </div>
-                                ))}
+                                    {/* Tool feedback */}
+                                    {m.tool_calls?.map((ti) => (
+                                        <div
+                                            key={ti.id}
+                                            className="mt-2 border-t border-pantry-stone/30 pt-2 text-[11px] italic opacity-70"
+                                        >
+                                            <span>
+                                                ✓ Applied {ti.function.name}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                     {isLoading &&
                         (!messages.length ||
-                            messages[messages.length - 1]?.role === "user" || 
+                            messages[messages.length - 1]?.role === "user" ||
                             messages[messages.length - 1]?.role === "tool") && (
                             <div className="flex items-start">
                                 <div className="rounded-2xl bg-white px-4 py-3 text-sm shadow-sm">
@@ -192,13 +204,16 @@ export function AISidebar({
                 onSubmit={async (e) => {
                     e.preventDefault();
                     if (!input.trim() || isLoading) return;
-                    
-                    const userMessage: Message = { role: 'user', content: input };
+
+                    const userMessage: Message = {
+                        role: "user",
+                        content: input,
+                    };
                     const newMessages = [...messages, userMessage];
-                    
+
                     setMessages(newMessages);
-                    setInput('');
-                    
+                    setInput("");
+
                     await sendMessage(newMessages);
                 }}
                 className="border-t border-pantry-stone bg-white p-4"
