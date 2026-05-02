@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import 'firebase/compat/auth';
 import { GeoFirestore } from 'geofirestore';
 
 const firebaseConfig = {
@@ -16,6 +17,7 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
+const auth = firebase.auth();
 const geoFirestore = new GeoFirestore(db as any);
 
-export { db, geoFirestore };
+export { db, auth, geoFirestore, firebase };
