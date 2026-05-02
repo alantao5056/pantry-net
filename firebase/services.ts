@@ -1,4 +1,6 @@
-import { GeoPoint } from "firebase-admin/firestore";
+"use server";
+
+import { GeoPoint } from "firebase/firestore";
 import { geoFirestore } from "./firebase";
 import { GeocoderFactory } from "@/geocoding/GeocoderFactory";
 import type { PantryDocument } from "./models/Pantry";

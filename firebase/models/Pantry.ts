@@ -1,4 +1,4 @@
-import { GeoPoint } from "firebase-admin/firestore";
+import { GeoPoint } from "firebase/firestore";
 
 export interface ScheduleSchema {
   startTime: string;
