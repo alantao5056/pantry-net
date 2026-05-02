@@ -52,7 +52,7 @@ export default function SearchPage() {
         const fetchPantries = async () => {
             const results = await searchPantriesByAddress("Boston, MA", 10);
             console.log("Search results:", results);
-            conso;
+
             //setPantries(results);
         };
 
