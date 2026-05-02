@@ -9,7 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/mistral": "^3.0.33",
+    "@ai-sdk/react": "^3.0.176",
     "@tailgrids/icons": "^2.0.0",
+    "ai": "^6.0.174",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^12.12.1",
@@ -21,8 +24,11 @@
     "react": "19.2.4",
     "react-aria-components": "^1.17.0",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
     "react-resizable-panels": "^4.10.0",
-    "tailwind-merge": "^3.5.0"
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",
