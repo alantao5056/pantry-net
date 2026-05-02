@@ -1,5 +1,3 @@
-"use server";
-
 import { GeoPoint } from "firebase/firestore";
 import { geoFirestore } from "./firebase";
 import { GeocoderFactory } from "@/geocoding/GeocoderFactory";
