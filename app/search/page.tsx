@@ -14,7 +14,7 @@ import {
 } from "@/components/tailgrids/core/resizable";
 import Map from "@/components/map";
 import { PantryDocument } from "@/firebase/models/Pantry";
-import { searchPantriesByAddress } from "@/firebase/services";
+import { searchPantriesByAddress, fetchPantryById } from "@/firebase/services";
 
 export default function SearchPage() {
     const searchParams = useSearchParams();
@@ -52,6 +52,8 @@ export default function SearchPage() {
         const fetchPantries = async () => {
             const results = await searchPantriesByAddress("Boston, MA", 10);
             console.log("Search results:", results);
+            console.log("Search state:", searchState);
+            console.log(await fetchPantryById("00qAO6txTSHy3fvIoREf"));
 
             //setPantries(results);
         };
