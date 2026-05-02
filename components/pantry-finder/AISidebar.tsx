@@ -24,6 +24,7 @@ type Message = {
     content: string | null;
     name?: string;
     tool_calls?: any[];
+    toolCalls?: any[];
     tool_call_id?: string;
 };
 
@@ -65,11 +66,12 @@ export function AISidebar({
             setMessages(updatedMessages);
 
             // Execute tools if the assistant requested them
+            const toolsToExecute = responseMessage.toolCalls || responseMessage.tool_calls;
             if (
-                responseMessage.tool_calls &&
-                responseMessage.tool_calls.length > 0
+                toolsToExecute &&
+                toolsToExecute.length > 0
             ) {
-                const toolCall = responseMessage.tool_calls[0];
+                const toolCall = toolsToExecute[0];
                 const functionName = toolCall.function.name;
                 const functionParams = JSON.parse(toolCall.function.arguments);
 
@@ -167,10 +169,15 @@ export function AISidebar({
                                                 {m.content}
                                             </ReactMarkdown>
                                         </div>
+                                    ) : !m.tool_calls && !m.toolCalls && m.role === 'assistant' ? (
+                                        <div className="flex items-center gap-2 opacity-50 italic">
+                                            <Loader2 size={12} className="animate-spin" />
+                                            Thinking...
+                                        </div>
                                     ) : null}
 
                                     {/* Tool feedback */}
-                                    {m.tool_calls?.map((ti) => (
+                                    {(m.toolCalls || m.tool_calls)?.map((ti: any) => (
                                         <div
                                             key={ti.id}
                                             className="mt-2 border-t border-pantry-stone/30 pt-2 text-[11px] italic opacity-70"
