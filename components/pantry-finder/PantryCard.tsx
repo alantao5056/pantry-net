@@ -31,7 +31,13 @@ function statusBadge(status: Pantry["status"]) {
     );
 }
 
-export function PantryCard({ pantry }: { pantry: Pantry }) {
+export function PantryCard({ 
+    pantry, 
+    onShowDetails 
+}: { 
+    pantry: Pantry, 
+    onShowDetails?: (pantry: Pantry) => void 
+}) {
     const days = pantry.schedules
         .filter((s) => s.weekDay && s.start)
         .slice(0, 2);
@@ -112,6 +118,7 @@ export function PantryCard({ pantry }: { pantry: Pantry }) {
                 <Button
                     size="sm"
                     className="bg-pantry-dark hover:bg-pantry-medium"
+                    onClick={() => onShowDetails?.(pantry)}
                 >
                     Details <ChevronRight size={14} />
                 </Button>

@@ -110,6 +110,13 @@ export const LogOut = (p: IconProps) => (
   </Svg>
 );
 
+export const ChevronLeft = (p: IconProps) => (
+  <Svg {...p}>
+    <polyline points="15 18 9 12 15 6" />
+  </Svg>
+);
+
+
 export const ChevronRight = (p: IconProps) => (
   <Svg {...p}>
     <polyline points="9 18 15 12 9 6" />

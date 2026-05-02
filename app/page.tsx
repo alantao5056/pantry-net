@@ -5,6 +5,7 @@ import { Button } from "@/components/tailgrids/core/button";
 import { Footer } from "@/components/pantry-finder/Footer";
 import { Navbar } from "@/components/pantry-finder/Navbar";
 import { PANTRIES } from "@/components/pantry-finder/data";
+import { PantryDetailModal } from "@/components/pantry-finder/PantryDetailModal";
 import {
   ChevronRight,
   Clock,
@@ -50,6 +51,7 @@ export default function LandingPage() {
 
   const [address, setAddress] = useState("Boston, MA");
   const [radius, setRadius] = useState("10");
+  const [selectedPantry, setSelectedPantry] = useState<any>(null);
 
   return (
     <>
@@ -225,12 +227,12 @@ export default function LandingPage() {
                     <MapPin size={13} />
                     {p.address}
                   </div>
-                  <Link
-                    href="/search"
-                    className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white"
+                  <button
+                    onClick={() => setSelectedPantry(p)}
+                    className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white transition hover:bg-pantry-medium"
                   >
                     View Details
-                  </Link>
+                  </button>
                 </div>
               ))}
             </div>
@@ -256,6 +258,13 @@ export default function LandingPage() {
       </main>
 
       <Footer />
+
+      {selectedPantry && (
+        <PantryDetailModal 
+          pantry={selectedPantry} 
+          onClose={() => setSelectedPantry(null)} 
+        />
+      )}
     </>
   );
 }

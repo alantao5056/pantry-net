@@ -1,5 +1,5 @@
 import { GeoPoint } from "firebase/firestore";
-import { geoFirestore } from "./firebase";
+import { geoFirestore, db } from "./firebase";
 import { GeocoderFactory } from "@/geocoding/GeocoderFactory";
 import type { PantryDocument } from "./models/Pantry";
 
@@ -46,7 +46,7 @@ export async function searchPantriesByAddress(
 export const fetchPantryById = async (
     id: string,
 ): Promise<PantryDocument | null> => {
-    const doc = await geoFirestore.collection("pantries").doc(id).get();
+    const doc = await db.collection("pantries").doc(id).get();
     if (!doc.exists) {
         return null;
     }
