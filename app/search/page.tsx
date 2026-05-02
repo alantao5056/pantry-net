@@ -32,7 +32,9 @@ export default function SearchPage() {
 
     const [view, setView] = useState<"list" | "map">("list");
     const [hoveredPantryId, setHoveredPantryId] = useState<string | null>(null);
-    const [selectedPantry, setSelectedPantry] = useState<PantryDocument | null>(null);
+    const [selectedPantry, setSelectedPantry] = useState<PantryDocument | null>(
+        null,
+    );
     const [searchState, setSearchState] = useState({
         address: initialAddress,
         radius: initialRadius,
@@ -45,6 +47,7 @@ export default function SearchPage() {
     });
 
     const [rawPantries, setRawPantries] = useState<PantryDocument[]>([]);
+    const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
 
     const filteredPantries = useMemo(() => {
         return rawPantries
@@ -161,7 +164,9 @@ export default function SearchPage() {
                                         <PantryCard
                                             key={p.id}
                                             pantry={p as any}
-                                            onShowDetails={(pantry) => setSelectedPantry(pantry as any)}
+                                            onShowDetails={(pantry) =>
+                                                setSelectedPantry(pantry as any)
+                                            }
                                         />
                                     ))}
                                 </div>
@@ -232,7 +237,13 @@ export default function SearchPage() {
                                                 >
                                                     <PantryCard
                                                         pantry={p as any}
-                                                        onShowDetails={(pantry) => setSelectedPantry(pantry as any)}
+                                                        onShowDetails={(
+                                                            pantry,
+                                                        ) =>
+                                                            setSelectedPantry(
+                                                                pantry as any,
+                                                            )
+                                                        }
                                                     />
                                                 </div>
                                             ))}
@@ -271,9 +282,9 @@ export default function SearchPage() {
             </div>
 
             {selectedPantry && (
-                <PantryDetailModal 
-                    pantry={selectedPantry} 
-                    onClose={() => setSelectedPantry(null)} 
+                <PantryDetailModal
+                    pantry={selectedPantry}
+                    onClose={() => setSelectedPantry(null)}
                 />
             )}
         </>
