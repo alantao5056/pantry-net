@@ -17,11 +17,16 @@ export function SearchTopBar({
     view,
     defaultView = "list",
     onViewChange,
+    initialAddress = "Boston, MA",
+    initialRadius = "10",
+    onSearch,
 }: SearchTopBarProps) {
     const [internalView, setInternalView] = useState<"list" | "map">(
         defaultView,
     );
     const currentView = view ?? internalView;
+    const [address, setAddress] = useState(initialAddress);
+    const [radius, setRadius] = useState(initialRadius);
 
     const handleViewChange = (nextView: "list" | "map") => {
         onViewChange?.(nextView);
@@ -36,14 +41,16 @@ export function SearchTopBar({
                 <label className="flex flex-1 items-center gap-2.5 rounded-lg border border-pantry-stone bg-pantry-cream px-3.5">
                     <MapPin size={16} className="text-pantry-bright" />
                     <input
-                        defaultValue="Boston, MA"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
                         placeholder="Address or city..."
                         className="flex-1 bg-transparent py-2.5 text-sm text-pantry-ink placeholder:text-gray-400 outline-none"
                     />
                 </label>
 
                 <select
-                    defaultValue="10"
+                    value={radius}
+                    onChange={(e) => setRadius(e.target.value)}
                     className="rounded-lg border border-pantry-stone bg-pantry-cream px-3.5 py-2.5 text-sm text-pantry-ink outline-none"
                 >
                     {["2", "5", "10", "25", "50"].map((r) => (
@@ -55,6 +62,7 @@ export function SearchTopBar({
 
                 <Button
                     size="sm"
+                    onClick={() => onSearch?.(address, radius)}
                     className="bg-pantry-dark hover:bg-pantry-medium"
                 >
                     <Search size={15} /> Search
