@@ -49,9 +49,9 @@ export default function LandingPage() {
     const featured = PANTRIES.slice(0, 3);
     const router = useRouter();
 
-  const [address, setAddress] = useState("Boston, MA");
-  const [radius, setRadius] = useState("10");
-  const [selectedPantry, setSelectedPantry] = useState<any>(null);
+    const [address, setAddress] = useState("Boston, MA");
+    const [radius, setRadius] = useState("10");
+    const [selectedPantry, setSelectedPantry] = useState<any>(null);
 
     return (
         <>
@@ -179,7 +179,7 @@ export default function LandingPage() {
                     <div className="mx-auto max-w-[1100px]">
                         <div className="mb-14 text-center">
                             <h2 className="mb-3 font-serif text-3xl text-pantry-dark sm:text-4xl md:text-[42px]">
-                                How PantryFinder Works
+                                How PantryNet Works
                             </h2>
                             <p className="mx-auto max-w-[480px] text-base text-gray-500">
                                 Three simple steps to find the food support you
@@ -210,51 +210,51 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-        {/* Featured pantries */}
-        <section className="bg-white px-6 py-20">
-          <div className="mx-auto max-w-[1100px]">
-            <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-serif text-2xl text-pantry-dark sm:text-3xl md:text-[38px]">
-                Featured Pantries
-              </h2>
-              <Link
-                href="/search"
-                className="flex items-center gap-1.5 rounded-xl border-[1.5px] border-pantry-dark px-5 py-2 text-sm font-medium text-pantry-dark"
-              >
-                View All <ChevronRight size={16} />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((p) => (
-                <div
-                  key={p.id}
-                  className="rounded-2xl border border-pantry-beige bg-pantry-cream p-6"
-                >
-                  <div className="mb-3 flex items-start justify-between">
-                    <h3 className="mr-2 flex-1 font-serif text-[17px] text-pantry-ink">
-                      {p.name}
-                    </h3>
-                    {p.status !== "closed-today" && (
-                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-900">
-                        Open Today
-                      </span>
-                    )}
-                  </div>
-                  <div className="mb-4 flex items-center gap-1.5 text-[13px] text-gray-500">
-                    <MapPin size={13} />
-                    {p.address}
-                  </div>
-                  <button
-                    onClick={() => setSelectedPantry(p)}
-                    className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white transition hover:bg-pantry-medium"
-                  >
-                    View Details
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                {/* Featured pantries */}
+                <section className="bg-white px-6 py-20">
+                    <div className="mx-auto max-w-[1100px]">
+                        <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
+                            <h2 className="font-serif text-2xl text-pantry-dark sm:text-3xl md:text-[38px]">
+                                Featured Pantries
+                            </h2>
+                            <Link
+                                href="/search"
+                                className="flex items-center gap-1.5 rounded-xl border-[1.5px] border-pantry-dark px-5 py-2 text-sm font-medium text-pantry-dark"
+                            >
+                                View All <ChevronRight size={16} />
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {featured.map((p) => (
+                                <div
+                                    key={p.id}
+                                    className="rounded-2xl border border-pantry-beige bg-pantry-cream p-6"
+                                >
+                                    <div className="mb-3 flex items-start justify-between">
+                                        <h3 className="mr-2 flex-1 font-serif text-[17px] text-pantry-ink">
+                                            {p.name}
+                                        </h3>
+                                        {p.status !== "closed-today" && (
+                                            <span className="rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-900">
+                                                Open Today
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="mb-4 flex items-center gap-1.5 text-[13px] text-gray-500">
+                                        <MapPin size={13} />
+                                        {p.address}
+                                    </div>
+                                    <button
+                                        onClick={() => setSelectedPantry(p)}
+                                        className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white transition hover:bg-pantry-medium"
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
                 {/* CTA */}
                 <section className="bg-gradient-to-br from-pantry-dark to-pantry-medium px-6 py-20 text-center">
@@ -274,14 +274,14 @@ export default function LandingPage() {
                 </section>
             </main>
 
-      <Footer />
+            <Footer />
 
-      {selectedPantry && (
-        <PantryDetailModal 
-          pantry={selectedPantry} 
-          onClose={() => setSelectedPantry(null)} 
-        />
-      )}
-    </>
-  );
+            {selectedPantry && (
+                <PantryDetailModal
+                    pantry={selectedPantry}
+                    onClose={() => setSelectedPantry(null)}
+                />
+            )}
+        </>
+    );
 }
