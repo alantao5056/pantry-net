@@ -1,24 +1,47 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { FilterSidebar } from "@/components/pantry-finder/FilterSidebar";
 import { Navbar } from "@/components/pantry-finder/Navbar";
 import { PantryCard } from "@/components/pantry-finder/PantryCard";
 import { SearchTopBar } from "@/components/pantry-finder/SearchTopBar";
 import { PANTRIES } from "@/components/pantry-finder/data";
 import { SlidersHorizontal } from "@/components/pantry-finder/icons";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup
+} from "@/components/tailgrids/core/resizable";
+import Map from "@/components/map";
 
 export default function SearchPage() {
+  const [view, setView] = useState<"list" | "map">("list");
+  const [hoveredPantryId, setHoveredPantryId] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Map to store refs for each pantry card to enable scrolling to them
+  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    if (hoveredPantryId && cardRefs.current[hoveredPantryId] && view === "map") {
+      cardRefs.current[hoveredPantryId]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [hoveredPantryId, view]);
+
   return (
     <>
       <Navbar />
 
-      <div className="mt-16 flex flex-col bg-pantry-cream">
-        <SearchTopBar onViewChange={(view) => console.log(view)} />
+      <div className="mt-16 flex h-[calc(100vh-64px)] flex-col bg-pantry-cream">
+        <SearchTopBar onViewChange={(view) => setView(view)} />
 
-        <div className="flex">
+        <div className="flex flex-1 overflow-hidden">
           <FilterSidebar />
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col overflow-hidden">
             <div className="flex items-center gap-3 border-b border-pantry-stone bg-white px-6 py-3.5">
               <button
                 type="button"
@@ -35,12 +58,51 @@ export default function SearchPage() {
               </span>
             </div>
 
-            
-            <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2 xl:grid-cols-3">
-              {PANTRIES.map((p) => (
-                <PantryCard key={p.id} pantry={p} />
-              ))}
-            </div>
+            {view === "list" ? (
+              <div className="flex-1 overflow-y-auto">
+                <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {PANTRIES.map((p) => (
+                    <PantryCard key={p.id} pantry={p} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <ResizablePanelGroup className="flex-1">
+                <ResizablePanel defaultSize={70}>
+                  <div className="h-full w-full">
+                    <Map 
+                      onPantryHover={setHoveredPantryId} 
+                      hoveredPantryId={hoveredPantryId}
+                    />
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={30} minSize={20}>
+                  <div 
+                    ref={scrollContainerRef}
+                    className="h-full overflow-y-auto bg-pantry-cream p-4"
+                  >
+                    <div className="flex flex-col gap-4">
+                      {PANTRIES.map((p) => (
+                        <div
+                          key={p.id}
+                          ref={(el) => { cardRefs.current[p.id] = el; }}
+                          onMouseEnter={() => setHoveredPantryId(p.id)}
+                          onMouseLeave={() => setHoveredPantryId(null)}
+                          className={`transition-all duration-200 ${
+                            hoveredPantryId === p.id 
+                              ? "ring-2 ring-pantry-dark scale-[1.02] shadow-lg" 
+                              : ""
+                          }`}
+                        >
+                          <PantryCard pantry={p} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            )}
           </div>
         </div>
       </div>
