@@ -37,3 +37,11 @@ export async function searchPantriesByAddress(
         (doc) => ({ id: doc.id, ...doc.data() }) as unknown as PantryDocument,
     );
 }
+
+export const fetchPantryById = async (id: string): Promise<PantryDocument | null> => {
+  const doc = await geoFirestore.collection("pantries").doc(id).get();
+  if (!doc.exists) {
+    return null;
+  }
+  return { id: doc.id, ...doc.data() } as unknown as PantryDocument;
+};
