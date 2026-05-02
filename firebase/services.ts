@@ -5,25 +5,20 @@ import { geoFirestore } from "./firebase";
 import { GeocoderFactory } from "@/geocoding/GeocoderFactory";
 import type { PantryDocument } from "./models/Pantry";
 
-interface PantrySearchDto {
-  address: string;
-  radius: number; // miles
-}
-
 function milesToKilometers(miles: number): number {
   return miles * 1.60934;
 }
 
 export async function searchPantriesByAddress(
-  dto: PantrySearchDto
+  address: string, radius: number
 ): Promise<PantryDocument[] | null> {
   const geocoder = GeocoderFactory.create();
-  const coordinates = await geocoder.geocode(dto.address);
+  const coordinates = await geocoder.geocode(address);
   if (!coordinates) {
     return null;
   }
 
-  const radiusKm = milesToKilometers(dto.radius);
+  const radiusKm = milesToKilometers(radius);
   const center = new GeoPoint(coordinates.latitude, coordinates.longitude);
 
   const pantriesRef = geoFirestore.collection("pantries");
