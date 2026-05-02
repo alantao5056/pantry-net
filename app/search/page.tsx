@@ -37,6 +37,7 @@ export default function SearchPage() {
         address: initialAddress,
         radius: initialRadius,
     });
+    const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
 
     const [filters, setFilters] = useState({
         openNow: false,

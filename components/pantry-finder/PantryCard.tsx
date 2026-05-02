@@ -11,6 +11,8 @@ import {
 } from "@/components/tailgrids/core/card";
 
 import type { Pantry } from "./data";
+import { useAuth } from "@/context/AuthContext";
+import { toggleHeart } from "@/firebase/services";
 
 function statusBadge(status: Pantry["status"]) {
     if (status === "open-now")
@@ -33,9 +35,37 @@ function statusBadge(status: Pantry["status"]) {
 }
 
 export function PantryCard({ pantry, onShowDetails }: { pantry: Pantry, onShowDetails?: (pantry: Pantry) => void }) {
+    const { user, openAuthModal } = useAuth();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
+    const [hearts, setHearts] = useState<string[]>((pantry as any).hearts || []);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    const isHearted = user ? hearts.includes(user.uid) : false;
+
+    const handleToggleHeart = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!user) {
+            openAuthModal();
+            return;
+        }
+
+        const newIsHearted = !isHearted;
+        // Optimistic update
+        if (newIsHearted) {
+            setHearts([...hearts, user.uid]);
+        } else {
+            setHearts(hearts.filter((id) => id !== user.uid));
+        }
+
+        try {
+            await toggleHeart(pantry.id, user.uid, newIsHearted);
+        } catch (error) {
+            console.error("Error toggling heart:", error);
+            // Rollback
+            setHearts((pantry as any).hearts || []);
+        }
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -204,10 +234,15 @@ export function PantryCard({ pantry, onShowDetails }: { pantry: Pantry, onShowDe
             <div className="flex items-center gap-2 border-t border-pantry-stone/60 px-5 py-3">
                 <button
                     type="button"
-                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-500"
+                    onClick={handleToggleHeart}
+                    className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] font-medium transition ${
+                        isHearted 
+                            ? "border-red-100 bg-red-50 text-red-600" 
+                            : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+                    }`}
                 >
-                    <Heart size={14} />
-                    {pantry.loves || 0}
+                    <Heart size={14} fill={isHearted ? "currentColor" : "none"} />
+                    {hearts.length}
                 </button>
                 <button
                     type="button"

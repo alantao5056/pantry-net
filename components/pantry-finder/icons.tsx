@@ -224,3 +224,9 @@ export const Loader2 = (p: IconProps) => (
     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
   </Svg>
 );
+
+export const MessageSquare = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </Svg>
+);
