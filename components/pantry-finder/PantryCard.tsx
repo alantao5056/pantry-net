@@ -32,7 +32,7 @@ function statusBadge(status: Pantry["status"]) {
     );
 }
 
-export function PantryCard({ pantry }: { pantry: Pantry }) {
+export function PantryCard({ pantry, onShowDetails }: { pantry: Pantry, onShowDetails?: (pantry: Pantry) => void }) {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [isLoadingImage, setIsLoadingImage] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -226,6 +226,7 @@ export function PantryCard({ pantry }: { pantry: Pantry }) {
                 <Button
                     size="sm"
                     className="bg-pantry-dark hover:bg-pantry-medium"
+                    onClick={() => onShowDetails?.(pantry)}
                 >
                     Details <ChevronRight size={14} />
                 </Button>

@@ -10,10 +10,11 @@ const MAPBOX_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 interface MapProps {
     pantries: PantryDocument[];
     onPantryHover?: (pantryId: string | null) => void;
+    onShowDetails?: (pantry: PantryDocument) => void;
     hoveredPantryId?: string | null;
 }
 
-function Map({ pantries, onPantryHover, hoveredPantryId }: MapProps) {
+function Map({ pantries, onPantryHover, onShowDetails, hoveredPantryId }: MapProps) {
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
     const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({});
@@ -63,7 +64,7 @@ function Map({ pantries, onPantryHover, hoveredPantryId }: MapProps) {
             });
 
             marker.getElement().addEventListener("click", () => {
-                alert(`Pantry: ${pantry.name}\nAddress: ${pantry.address}`);
+                onShowDetails?.(pantry);
             });
         }
 

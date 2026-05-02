@@ -5,6 +5,7 @@ import { Button } from "@/components/tailgrids/core/button";
 import { Footer } from "@/components/pantry-finder/Footer";
 import { Navbar } from "@/components/pantry-finder/Navbar";
 import { PANTRIES } from "@/components/pantry-finder/data";
+import { PantryDetailModal } from "@/components/pantry-finder/PantryDetailModal";
 import {
     ChevronRight,
     Clock,
@@ -50,6 +51,7 @@ export default function LandingPage() {
 
     const [address, setAddress] = useState("Boston, MA");
     const [radius, setRadius] = useState("10");
+    const [selectedPantry, setSelectedPantry] = useState<any>(null);
 
     return (
         <>
@@ -242,20 +244,44 @@ export default function LandingPage() {
                                         <MapPin size={13} />
                                         {p.address}
                                     </div>
-                                    <Link
-                                        href="/search"
-                                        className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white"
+                                    <button
+                                        onClick={() => setSelectedPantry(p)}
+                                        className="block w-full rounded-lg bg-pantry-dark px-4 py-2 text-center text-[13px] font-medium text-white transition hover:bg-pantry-medium"
                                     >
                                         View Details
-                                    </Link>
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </section>
+
+                {/* CTA */}
+                <section className="bg-gradient-to-br from-pantry-dark to-pantry-medium px-6 py-20 text-center">
+                    <h2 className="mb-4 font-serif text-3xl text-white sm:text-4xl md:text-[44px]">
+                        Know a pantry we&apos;re missing?
+                    </h2>
+                    <p className="mx-auto mb-8 max-w-[500px] text-base text-white/75">
+                        Help us keep PantryFinder accurate and complete for
+                        everyone in the community.
+                    </p>
+                    <Button
+                        size="lg"
+                        className="border-[1.5px] border-white/40 bg-white/15 text-white backdrop-blur-md hover:bg-white/25"
+                    >
+                        Submit a Pantry
+                    </Button>
+                </section>
             </main>
 
             <Footer />
+
+            {selectedPantry && (
+                <PantryDetailModal
+                    pantry={selectedPantry}
+                    onClose={() => setSelectedPantry(null)}
+                />
+            )}
         </>
     );
 }
